@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
+      SPRING_H2_CONSOLE_ENABLED: "true"
+    volumes:
+      - ./uploads:/app/uploads
+    command: ["java", "-jar", "app.jar"]
+    depends_on:
+      - h2
+  h2:
+    image: oscarfonts/h2
+    ports:
+      - "1521:1521"
+      - "81:81"
+    environment:
+      H2_OPTIONS: -ifNotExists
+    volumes:
+      - h2-data:/h2-data
+
+volumes:
+  h2-data:
