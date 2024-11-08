@@ -15,21 +15,26 @@ services:
       SPRING_DATASOURCE_USERNAME: sa
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_H2_CONSOLE_ENABLED: "true"
+      SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS: "true"
+      SPRING_DATASOURCE_SCHEMA: classpath:init.sql
     volumes:
       - ./uploads:/app/uploads
+      - ./init.sql:/app/init.sql
     command: ["java", "-jar", "app.jar"]
     depends_on:
       - h2
+
   h2:
     image: oscarfonts/h2
     ports:
       - "1521:1521"
       - "81:81"
     environment:
-      H2_OPTIONS: -ifNotExists
+      H2_OPTIONS: "-tcpAllowOthers -tcpPort 1521 -ifNotExists"
     volumes:
-      - h2-data:/h2-data
+      - h2-data:/opt/h2-data  # 更改 Volume 路徑至 /opt/h2-data
 
 volumes:
   h2-data:

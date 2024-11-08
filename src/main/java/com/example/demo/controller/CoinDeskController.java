@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -57,6 +58,7 @@ public class CoinDeskController {
     // 新增幣別
     @PostMapping
     public ResponseEntity<Currency> createCurrency(@RequestBody Currency currency) {
+        currency.setCreateTime(LocalDateTime.now());
         if (currencyRepository.findByCode(currency.getCode()).isPresent()) {
             return ResponseEntity.status(400).build();
         }

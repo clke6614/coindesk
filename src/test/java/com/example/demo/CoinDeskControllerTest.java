@@ -72,7 +72,7 @@ public class CoinDeskControllerTest {
         // 新增 USD 幣別
         mockMvc.perform(post("/api/coindesk")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(usdCurrency)))
+                .content("{ \"code\": \"USD\", \"nameZh\": \"美元\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.code").value("USD"))
                 .andExpect(jsonPath("$.nameZh").value("美元"));
@@ -80,7 +80,7 @@ public class CoinDeskControllerTest {
         // 新增 GBP 幣別
         mockMvc.perform(post("/api/coindesk")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(gbpCurrency)))
+                .content("{ \"code\": \"GBP\", \"nameZh\": \"英鎊\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.code").value("GBP"))
                 .andExpect(jsonPath("$.nameZh").value("英鎊"));
@@ -88,7 +88,7 @@ public class CoinDeskControllerTest {
         // 新增 EUR 幣別
         mockMvc.perform(post("/api/coindesk")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(eurCurrency)))
+                .content("{ \"code\": \"EUR\", \"nameZh\": \"歐元\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.code").value("EUR"))
                 .andExpect(jsonPath("$.nameZh").value("歐元"));
