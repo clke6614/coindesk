@@ -1,0 +1,17 @@
+startDelaySeconds: 0
+ssl: false
+lowercaseOutputName: true
+whitelistObjectNames: 
+  - kafka.server:type=BrokerTopicMetrics,name=*
+  - kafka.server:type=KafkaServer,name=*
+  - kafka.consumer:type=ConsumerFetcherManager,clientId=*
+  - kafka.producer:type=ProducerPerTopicMetrics,clientId=*
+  - kafka.network:type=RequestMetrics,name=RequestsPerSec
+  - kafka.network:type=SocketServer,name=*
+  - kafka.controller:type=KafkaController,name=*
+  - kafka.server:type=LogSegmentMetrics,name=*
+  - kafka.server:type=ReplicaFetcherManager,name=*
+  - kafka.server:type=ReplicaManager,name=*
+  - kafka.server:type=Partition,name=*
+  - kafka.server:type=Log,name=*
+  - kafka.server:type=BrokerState,name=*

@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: 'spring-app'
+    static_configs:
+      - targets: ['app:8080']  # 使用 docker-compose 中定义的服务名
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['kafka:7071']

@@ -5,11 +5,19 @@ spring:
     encoding:
       charset: UTF-8
       enabled: true
-      force: true   
+      force: true
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: demo-group
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
 server:
   port: 8080
 
-# OpenAPI (Springdoc) 配置
 springdoc:
   api-docs:
     enabled: true
@@ -18,9 +26,22 @@ springdoc:
     enabled: true
   packages-to-scan: com.example.demo.controller
 
-# 可選：自定義 OpenAPI 信息
 openapi:
   info:
     title: Demo API
     version: 1.0.0
     description: API documentation for Demo project
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+  metrics:
+    tags:
+      application: demo
+
+logging:
+  level:
+    org.apache.kafka: INFO
+    com.example.demo: DEBUG

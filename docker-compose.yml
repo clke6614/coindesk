@@ -19,12 +19,14 @@ services:
       SPRING_H2_CONSOLE_ENABLED: "true"
       SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS: "true"
       SPRING_DATASOURCE_SCHEMA: classpath:init.sql
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     volumes:
       - ./uploads:/app/uploads
       - ./init.sql:/app/init.sql
     command: ["java", "-jar", "app.jar"]
     depends_on:
       - h2
+      - kafka
 
   h2:
     image: oscarfonts/h2
@@ -34,7 +36,46 @@ services:
     environment:
       H2_OPTIONS: "-tcpAllowOthers -tcpPort 1521 -ifNotExists"
     volumes:
-      - h2-data:/opt/h2-data  # 更改 Volume 路徑至 /opt/h2-data
+      - h2-data:/opt/h2-data
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "7071:7071"  # JMX Exporter 端口
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_OPTS: "-javaagent:/opt/kafka/jmx_prometheus_javaagent.jar=7071:/opt/kafka/kafka-2_0_0.yml"
+    volumes:
+      - ./jmx_exporter/jmx_prometheus_javaagent.jar:/opt/kafka/jmx_prometheus_javaagent.jar
+      - ./kafka-2_0_0.yml:/opt/kafka/kafka-2_0_0.yml
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
 
 volumes:
   h2-data:
